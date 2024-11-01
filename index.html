@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Application</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="text-center p-6 bg-white rounded-lg shadow-lg">
+        <h1 class="font-sans font-bold text-4xl text-blue-500 mb-4">Weather Application</h1>
+        <div class="text-center mb-6">
+            This application fetches weather data from <a href="https://openweathermap.org/" class="text-blue-500 italic" target="_blank">Open Weather</a>.
+        </div>
+        
+        <div class="flex items-center space-x-2 mx-20">
+            <input type="text" id="searchBox" class="border border-gray-300 rounded-lg py-2 px-4 w-64" placeholder="Enter city name">
+            <button class="p-2 bg-blue-500 rounded-lg" id="searchBtn">
+                <img src="images/search.png" alt="Search" class="w-6 h-6">
+            </button>
+        </div>
+        
+
+        <!-- Display weather info here -->
+        <div class="mt-4">
+            <p id="name" class="text-2xl font-bold"></p>
+            <p id="temp" class="text-xl"></p>
+        </div>
+
+        <!-- Error message -->
+        <div class="error text-red-500 mt-4 hidden">City not found.</div>
+        <!--footer-->
+        <div class="mt-10 font-semibold">
+            Made with ❤️ by 
+            <a href="https://www.linkedin.com/in/shrujaigupta/" target="_blank" class="text-blue-500 hover:underline">
+                Shrujai Gupta
+            </a>
+        </div>
+        
+    </div>
+
+    <script>
+        const apiKey = "312abfd953c970ceaf81f671079f6e22";
+        const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+        const searchBox = document.getElementById("searchBox");
+        const searchBtn = document.getElementById("searchBtn");
+        const cityName = document.getElementById("name");
+        const temp = document.getElementById("temp");
+        const errorContainer = document.querySelector(".error");
+
+        searchBtn.addEventListener("click", () => {
+            checkWeather(searchBox.value);
+        });
+
+        async function checkWeather(city) {
+                const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+                
+                if (response.status === 404) {
+                    errorContainer.style.display = "block";
+                    cityName.innerHTML = "City not found";
+                    temp.innerHTML = "";
+                    return;
+                }
+                
+                const data = await response.json();
+
+                cityName.innerHTML = data.name;
+                temp.innerHTML = `${Math.round(data.main.temp)}°C`;
+                errorContainer.style.display = "none"; 
+            
+        }
+    </script>
+</body>
+</html>
